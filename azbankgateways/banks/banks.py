@@ -22,6 +22,7 @@ class BaseBank:
     _gateway_currency: str = CurrencyEnum.IRR
     _currency: str = CurrencyEnum.IRR
     _amount: int = 0
+    _payer = None
     _gateway_amount: int = 0
     _mobile_number: str = None
     _tracking_code: int = None
@@ -76,6 +77,14 @@ class BaseBank:
             raise AmountDoesNotSupport()
         self._amount = int(amount)
 
+    def get_payer(self):
+        """get the payer"""
+        return self._payer
+
+    def set_payer(self, payer):
+        """set payer"""
+        self._payer = payer
+
     @abc.abstractmethod
     def prepare_pay(self):
         logging.debug("Prepare pay method")
@@ -114,6 +123,7 @@ class BaseBank:
             bank_choose_identifier=self.identifier,
             bank_type=self.get_bank_type(),
             amount=self.get_amount(),
+            payer=self.get_payer(),
             reference_number=self.get_reference_number(),
             response_result=self.get_transaction_status_text(),
             tracking_code=self.get_tracking_code(),
@@ -196,6 +206,7 @@ class BaseBank:
         self._set_tracking_code(self._bank.tracking_code)
         self._set_reference_number(self._bank.reference_number)
         self.set_amount(self._bank.amount)
+        self.set_payer(self._bank.payer)
 
     def get_reference_number(self):
         return self._reference_number

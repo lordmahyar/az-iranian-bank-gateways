@@ -16,7 +16,7 @@ def sample_payment_view(request):
         # create a form instance and populate it with data from the request:
         form = PaymentSampleForm(request.POST)
         # check whether it's valid:
-        if form.is_valid():
+        if form.is_valid() and request.user.is_authenticated:
             amount = form.cleaned_data['amount']
             mobile_number = form.cleaned_data['mobile_number']
             factory = bankfactories.BankFactory()
@@ -24,9 +24,11 @@ def sample_payment_view(request):
                 bank = factory.auto_create()
                 bank.set_request(request)
                 bank.set_amount(amount)
+                bank.set_payer(request.user)
                 # یو آر ال بازگشت به نرم افزار برای ادامه فرآیند
                 bank.set_client_callback_url(reverse(f'{AZIranianBankGatewaysConfig.name}:sample-result'))
-                bank.set_mobile_number(mobile_number)  # اختیاری
+                if mobile_number:
+                    bank.set_mobile_number(mobile_number)  # اختیاری
 
                 # در صورت تمایل اتصال این رکورد به رکورد فاکتور یا هر چیزی که بعدا بتوانید ارتباط بین محصول یا خدمات را با این
                 # پرداخت برقرار کنید.

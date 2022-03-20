@@ -310,11 +310,19 @@ for item in bank_models.Bank.objects.filter_return_from_bank():
 ## توسعه
 
 <p dir="rtl">
- اگر از این بسته استفاده می کنید و خوشتون اومده با دادن ستاره به ما دلگرمی بدید.البته که اگر زمان بگذارید و گسترش بدید خیلی استقبال می کنیم و خوشحال میشیم. البته که در هیچ کدوم از این موارد اصراری نیست. 
+این ورژن دارای قابلیت تراکنش به دیتابیس کاربران را دارد
 </p>
-<p dir="rtl">
- شاد باشید و خندون
-</p>
+
+```python
+bank_record = bank_models.Bank.objects.get(tracking_code=tracking_code)
+print(bank_record.payer.username)  # prints the payer's username
+```
+
+```python
+payer = User.objects.get(pk=request.pk)
+print(payer.payments.all())  #  prints all user's payments
+print(payer.payments.filter(status='Complete'))  #  prints Completed user's payments
+```
 
 ## License
 

@@ -4,6 +4,10 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from .enum import BankType, PaymentStatus
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 
 class BankQuerySet(models.QuerySet):
@@ -67,6 +71,12 @@ class Bank(models.Model):
         blank=False,
         verbose_name=_('Amount')
     )
+    payer = models.ForeignKey(
+        User,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name='payments',
+        verbose_name='پرداخت کننده')
     # Reference number return from bank
     reference_number = models.CharField(
         unique=True,
@@ -113,7 +123,7 @@ class Bank(models.Model):
         verbose_name_plural = _('Bank gateways')
 
     def __str__(self):
-        return '{}-{}'.format(self.pk, self.tracking_code)
+        return '{}-{}-{}'.format(self.pk, self.payer.username, self.tracking_code)
 
     @property
     def is_success(self):
